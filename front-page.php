@@ -114,7 +114,7 @@ $active_sections = businesspro_get_active_sections();
                              alt="<?php esc_attr_e('About us', 'businesspro'); ?>" 
                              class="about-image">
                     <?php else : ?>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                        <img src="https://placehold.co/400x600" 
                              alt="<?php esc_attr_e('Professional at work', 'businesspro'); ?>" 
                              class="about-image">
                     <?php endif; ?>
