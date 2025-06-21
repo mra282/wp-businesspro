@@ -94,9 +94,24 @@
                 </nav><!-- #site-navigation -->
                 
                 <div class="header-mobile-actions">
-                    <a href="#contact" class="btn btn-secondary book-now-btn" aria-label="<?php esc_attr_e('Book Now', 'businesspro'); ?>">
-                        <?php esc_html_e('Book Now', 'businesspro'); ?>
-                    </a>
+                    <?php
+                    // Get Book Now button configuration
+                    $book_now_config = businesspro_get_book_now_config();
+                    
+                    if ($book_now_config['enabled']) :
+                        // Build CSS classes
+                        $button_classes = 'btn btn-secondary book-now-btn';
+                        if (!empty($book_now_config['classes'])) {
+                            $button_classes .= ' ' . esc_attr($book_now_config['classes']);
+                        }
+                    ?>
+                        <a href="<?php echo esc_url($book_now_config['link']); ?>" 
+                           class="<?php echo esc_attr($button_classes); ?>" 
+                           target="<?php echo esc_attr($book_now_config['target']); ?>"
+                           aria-label="<?php echo esc_attr($book_now_config['text']); ?>">
+                            <?php echo esc_html($book_now_config['text']); ?>
+                        </a>
+                    <?php endif; ?>
                     
                     <button class="mobile-menu-toggle" aria-controls="primary-menu" aria-expanded="false" aria-label="<?php esc_attr_e('Toggle navigation', 'businesspro'); ?>">
                         <i class="fas fa-bars" aria-hidden="true"></i>

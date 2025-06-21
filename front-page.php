@@ -6,10 +6,14 @@
  */
 
 get_header();
+
+// Get active sections from customizer
+$active_sections = businesspro_get_active_sections();
 ?>
 
 <main id="primary" class="site-main">
     
+    <?php if (in_array('hero', $active_sections)) : ?>
     <!-- Hero Section -->
     <section class="hero-section" id="hero">
         <div class="hero-slider">
@@ -64,7 +68,9 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
     
+    <?php if (in_array('about', $active_sections)) : ?>
     <!-- About Section -->
     <section class="section" id="about">
         <div class="container">
@@ -116,7 +122,9 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
     
+    <?php if (in_array('services', $active_sections)) : ?>
     <!-- Services Section -->
     <section class="section" id="services">
         <div class="container">
@@ -203,7 +211,9 @@ get_header();
             <?php endif; ?>
         </div>
     </section>
+    <?php endif; ?>
     
+    <?php if (in_array('portfolio', $active_sections)) : ?>
     <!-- Portfolio Section -->
     <section class="section portfolio-section" id="portfolio">
         <div class="container">
@@ -258,7 +268,9 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
     
+    <?php if (in_array('testimonials', $active_sections)) : ?>
     <!-- Testimonials Section -->
     <section class="section testimonials-section" id="testimonials">
         <div class="container">
@@ -307,7 +319,9 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
     
+    <?php if (in_array('contact', $active_sections)) : ?>
     <!-- Contact Section -->
     <section class="section" id="contact">
         <div class="container">
@@ -369,6 +383,7 @@ get_header();
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
 </main><!-- #main -->
 

@@ -4,7 +4,7 @@ Theme URI: github.com/mra282/businesspro
 Author: Michael Anuszewski
 Author URI: github.com/mra282
 Description: A modern, responsive WordPress theme for small businesses and professionals. Features portfolio galleries, service showcases, testimonials, contact forms, and customizable sections perfect for agencies, consultants, freelancers, and service-based businesses.
-Version: 2.0.0
+Version: 2.0.1
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: businesspro
@@ -143,11 +143,14 @@ body:not(.home) .site-logo {
 }
 
 body:not(.home) .site-logo img {
-    height: 36px; /* Slightly smaller than homepage (40px) */
+    max-width: 150px;
+    width: auto;
 }
 
 body:not(.home) .custom-logo {
-    height: 36px !important;
+    max-width: 150px !important;
+    width: auto !important;
+    height: auto !important;
 }
 
 .section {
@@ -260,8 +263,16 @@ body:not(.home) .custom-logo {
 }
 
 .site-logo img {
-    height: 40px;
+    max-width: 150px;
+    width: auto;
     margin-right: 0.5rem;
+}
+
+/* WordPress custom logo constraint */
+.custom-logo {
+    max-width: 150px !important;
+    width: auto !important;
+    height: auto !important;
 }
 
 .main-navigation {
@@ -1313,17 +1324,17 @@ body:not(.home) .custom-logo {
     }
     
     .site-logo img {
-        height: 32px !important; /* Smaller logo image - force override */
-        width: auto !important; /* Maintain aspect ratio */
-        max-width: 100px; /* Prevent excessive width */
+        max-width: 150px !important;
+        width: auto !important;
+        height: auto !important;
         margin-right: 0.25rem;
     }
     
     /* Ensure custom logo from WordPress customizer is also constrained */
     .custom-logo {
-        height: 32px !important;
+        max-width: 150px !important;
         width: auto !important;
-        max-width: 100px !important;
+        height: auto !important;
     }
     
     /* Mobile Navigation Area */

@@ -47,7 +47,11 @@ get_header();
                         $icon = get_post_meta(get_the_ID(), '_service_icon', true) ?: 'fas fa-cog';
                         $features = get_post_meta(get_the_ID(), '_service_features', true);
                         $cta_text = get_post_meta(get_the_ID(), '_service_cta_text', true) ?: __('Learn More', 'businesspro');
-                        $cta_link = get_post_meta(get_the_ID(), '_service_cta_link', true) ?: '#contact';
+                        $cta_link = get_post_meta(get_the_ID(), '_service_cta_link', true);
+                        if (empty($cta_link) || $cta_link === '#contact') {
+                            // Use smart contact link helper
+                            $cta_link = businesspro_get_contact_link();
+                        }
                         ?>
                         <div class="service-card <?php echo $is_featured ? 'featured' : ''; ?>">
                             <div class="service-icon">
@@ -127,8 +131,7 @@ get_header();
     $cta_title = get_theme_mod('services_cta_title', __('Ready to Get Started?', 'businesspro'));
     $cta_text = get_theme_mod('services_cta_text', __('Contact us today for a consultation and personalized quote for your project.', 'businesspro'));
     $cta_button_text = get_theme_mod('services_cta_button', __('Get Started', 'businesspro'));
-    $contact_page = get_page_by_path('contact');
-    $cta_link = $contact_page ? get_permalink($contact_page) : '#contact';
+    $cta_link = businesspro_get_contact_link();
     ?>
     <section class="section cta-section" id="contact">
         <div class="container">

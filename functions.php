@@ -710,6 +710,91 @@ function businesspro_customize_register($wp_customize) {
         'type'        => 'checkbox',
         'description' => __('Show section navigation on the front page instead of regular menu', 'businesspro'),
     ));
+    
+    // Book Now Button Section
+    $wp_customize->add_section('book_now_button', array(
+        'title'       => __('Book Now Button', 'businesspro'),
+        'description' => __('Configure the Book Now button in the header', 'businesspro'),
+        'priority'    => 45,
+    ));
+    
+    // Enable/disable Book Now button
+    $wp_customize->add_setting('book_now_enable', array(
+        'default'           => true,
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ));
+    
+    $wp_customize->add_control('book_now_enable', array(
+        'label'   => __('Show Book Now Button', 'businesspro'),
+        'section' => 'book_now_button',
+        'type'    => 'checkbox',
+    ));
+    
+    // Book Now button text
+    $wp_customize->add_setting('book_now_text', array(
+        'default'           => __('Book Now', 'businesspro'),
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('book_now_text', array(
+        'label'           => __('Button Text', 'businesspro'),
+        'section'         => 'book_now_button',
+        'type'            => 'text',
+        'active_callback' => function() {
+            return get_theme_mod('book_now_enable', true);
+        },
+    ));
+    
+    // Book Now button link
+    $wp_customize->add_setting('book_now_link', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    
+    $wp_customize->add_control('book_now_link', array(
+        'label'           => __('Button Link', 'businesspro'),
+        'section'         => 'book_now_button',
+        'type'            => 'url',
+        'description'     => __('Leave empty to use smart contact navigation (recommended). Or enter a custom URL like mailto:your@email.com, tel:+1234567890, or any page URL.', 'businesspro'),
+        'active_callback' => function() {
+            return get_theme_mod('book_now_enable', true);
+        },
+    ));
+    
+    // Book Now button target
+    $wp_customize->add_setting('book_now_target', array(
+        'default'           => '_self',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('book_now_target', array(
+        'label'           => __('Link Target', 'businesspro'),
+        'section'         => 'book_now_button',
+        'type'            => 'select',
+        'choices'         => array(
+            '_self'  => __('Same Window', 'businesspro'),
+            '_blank' => __('New Window/Tab', 'businesspro'),
+        ),
+        'active_callback' => function() {
+            return get_theme_mod('book_now_enable', true) && get_theme_mod('book_now_link', '');
+        },
+    ));
+    
+    // Book Now button CSS classes
+    $wp_customize->add_setting('book_now_classes', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('book_now_classes', array(
+        'label'           => __('Additional CSS Classes', 'businesspro'),
+        'section'         => 'book_now_button',
+        'type'            => 'text',
+        'description'     => __('Optional: Add custom CSS classes separated by spaces', 'businesspro'),
+        'active_callback' => function() {
+            return get_theme_mod('book_now_enable', true);
+        },
+    ));
 }
 add_action('customize_register', 'businesspro_customize_register');
 
@@ -2111,6 +2196,59 @@ function businesspro_check_dependencies() {
     }
 }
 add_action('init', 'businesspro_check_dependencies');
+
+/**
+ * Include demo content importer
+ */
+if (file_exists(get_template_directory() . '/inc/demo-content.php')) {
+    require_once get_template_directory() . '/inc/demo-content.php';
+}
+
+/**
+ * Get smart contact link that works on all pages
+ * 
+ * @param string $fallback_link Optional fallback link
+ * @return string Contact link URL
+ */
+function businesspro_get_contact_link($fallback_link = '') {
+    if (is_front_page()) {
+        // On homepage, link to contact section
+        return '#contact';
+    } else {
+        // On other pages, link to contact page or back to homepage contact
+        $contact_page = get_page_by_path('contact');
+        if ($contact_page) {
+            return get_permalink($contact_page);
+        } elseif (!empty($fallback_link)) {
+            return $fallback_link;
+        } else {
+            return home_url('/#contact');
+        }
+    }
+}
+
+/**
+ * Get Book Now button configuration
+ * 
+ * @return array Button configuration array
+ */
+function businesspro_get_book_now_config() {
+    $config = array(
+        'enabled'  => get_theme_mod('book_now_enable', true),
+        'text'     => get_theme_mod('book_now_text', __('Book Now', 'businesspro')),
+        'link'     => get_theme_mod('book_now_link', ''),
+        'target'   => get_theme_mod('book_now_target', '_self'),
+        'classes'  => get_theme_mod('book_now_classes', ''),
+    );
+    
+    // If no custom link is set, use smart contact navigation
+    if (empty($config['link'])) {
+        $config['link'] = businesspro_get_contact_link();
+        $config['target'] = '_self'; // Always same window for internal navigation
+    }
+    
+    return $config;
+}
 
 /**
  * Theme functions end here
