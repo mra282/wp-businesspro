@@ -199,7 +199,8 @@ $active_sections = businesspro_get_active_sections();
             
             <?php
             // Show "View All Services" link if we have more services
-            $total_services = wp_count_posts('service')->publish ?? 0;
+            $total_services_obj = wp_count_posts('service');
+            $total_services = isset($total_services_obj->publish) ? $total_services_obj->publish : 0;
             $services_displayed = count($services);
             if ($total_services > $services_displayed || get_theme_mod('services_cta_show', true)) :
             ?>
@@ -350,34 +351,58 @@ $active_sections = businesspro_get_active_sections();
                 <div class="col-6">
                     <div class="contact-info">
                         <h3><?php esc_html_e('Contact Information', 'businesspro'); ?></h3>
+                        
+                        <?php 
+                        // Email - Always show (fallback to admin email if empty)
+                        $contact_email = get_theme_mod('contact_email', get_option('admin_email'));
+                        if (!empty($contact_email)) : ?>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4><?php esc_html_e('Email Us', 'businesspro'); ?></h4>
-                                <p><a href="mailto:<?php echo esc_attr(get_theme_mod('contact_email', get_option('admin_email'))); ?>"><?php echo esc_html(get_theme_mod('contact_email', get_option('admin_email'))); ?></a></p>
+                                <p><a href="mailto:<?php echo esc_attr($contact_email); ?>"><?php echo esc_html($contact_email); ?></a></p>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        // Phone - Only show if not empty and not default
+                        $contact_phone = get_theme_mod('contact_phone', '');
+                        if (!empty($contact_phone) && $contact_phone !== '(555) 123-4567') : ?>
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
                             <div>
                                 <h4><?php esc_html_e('Call Us', 'businesspro'); ?></h4>
-                                <p><a href="tel:<?php echo esc_attr(str_replace(array(' ', '(', ')', '-'), '', get_theme_mod('contact_phone', '(555) 123-4567'))); ?>"><?php echo esc_html(get_theme_mod('contact_phone', '(555) 123-4567')); ?></a></p>
+                                <p><a href="tel:<?php echo esc_attr(str_replace(array(' ', '(', ')', '-'), '', $contact_phone)); ?>"><?php echo esc_html($contact_phone); ?></a></p>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        // Business Hours - Only show if customized (not default)
+                        $business_hours = get_theme_mod('business_hours', '');
+                        if (!empty($business_hours) && $business_hours !== __('Monday - Friday: 9:00 AM - 5:00 PM', 'businesspro')) : ?>
                         <div class="contact-item">
                             <i class="fas fa-clock"></i>
                             <div>
                                 <h4><?php esc_html_e('Business Hours', 'businesspro'); ?></h4>
-                                <p><?php echo wp_kses_post(get_theme_mod('business_hours', __('Monday - Friday: 9:00 AM - 5:00 PM', 'businesspro'))); ?></p>
+                                <p><?php echo wp_kses_post($business_hours); ?></p>
                             </div>
                         </div>
+                        <?php endif; ?>
+                        
+                        <?php 
+                        // Certifications - Only show if customized (not default)
+                        $business_certifications = get_theme_mod('business_certifications', '');
+                        if (!empty($business_certifications) && $business_certifications !== __('Licensed & Insured', 'businesspro')) : ?>
                         <div class="contact-item">
                             <i class="fas fa-certificate"></i>
                             <div>
                                 <h4><?php esc_html_e('Certifications', 'businesspro'); ?></h4>
-                                <p><?php echo wp_kses_post(get_theme_mod('business_certifications', __('Licensed & Insured', 'businesspro'))); ?></p>
+                                <p><?php echo wp_kses_post($business_certifications); ?></p>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

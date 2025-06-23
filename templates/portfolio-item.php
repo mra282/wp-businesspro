@@ -5,13 +5,6 @@
  * @package BusinessPro
  */
 
-<?php
-/**
- * Template part for displaying portfolio items
- *
- * @package BusinessPro
- */
-
 $location = get_post_meta(get_the_ID(), '_portfolio_location', true);
 $date = get_post_meta(get_the_ID(), '_portfolio_date', true);
 $client = get_post_meta(get_the_ID(), '_portfolio_client', true);
@@ -112,47 +105,5 @@ if ($terms && !is_wp_error($terms)) {
                 <?php the_excerpt(); ?>
             </div>
         <?php endif; ?>
-    </div>
-</div>
-$categories = get_the_terms(get_the_ID(), 'portfolio_category');
-$category_slug = '';
-if ($categories && !is_wp_error($categories)) {
-    $category_slug = $categories[0]->slug;
-}
-?>
-
-<div class="portfolio-item" data-category="<?php echo esc_attr($category_slug); ?>">
-    <div class="portfolio-image">
-        <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('portfolio-thumb', array('class' => 'w-full h-64 object-cover', 'loading' => 'lazy')); ?>
-        <?php else : ?>
-            <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="<?php the_title(); ?>" class="w-full h-64 object-cover" loading="lazy">
-        <?php endif; ?>
-    </div>
-    <div class="portfolio-overlay">
-        <div class="portfolio-content">
-            <h3><?php the_title(); ?></h3>
-            <p><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
-            <div class="portfolio-meta">
-                <?php
-                $location = get_post_meta(get_the_ID(), '_portfolio_location', true);
-                $date = get_post_meta(get_the_ID(), '_portfolio_date', true);
-                
-                if ($location) :
-                ?>
-                    <span class="portfolio-location">📍 <?php echo esc_html($location); ?></span>
-                <?php endif; ?>
-                
-                <?php if ($date) : ?>
-                    <span class="portfolio-date">📅 <?php echo esc_html(date('M Y', strtotime($date))); ?></span>
-                <?php endif; ?>
-            </div>
-            <a href="<?php the_permalink(); ?>" class="portfolio-link">
-                <?php _e('View Details', 'businesspro'); ?>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </a>
-        </div>
     </div>
 </div>

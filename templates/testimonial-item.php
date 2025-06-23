@@ -5,13 +5,6 @@
  * @package BusinessPro
  */
 
-<?php
-/**
- * Template part for displaying testimonial items
- *
- * @package BusinessPro
- */
-
 $client_name = get_post_meta(get_the_ID(), '_testimonial_client_name', true);
 $client_role = get_post_meta(get_the_ID(), '_testimonial_client_role', true);
 $rating = get_post_meta(get_the_ID(), '_testimonial_rating', true);
@@ -70,26 +63,5 @@ $GLOBALS['testimonial_count']++;
                 </div>
             <?php endif; ?>
         </div>
-    </div>
-</div>
-$client_name = get_post_meta(get_the_ID(), '_testimonial_client_name', true);
-$rating = get_post_meta(get_the_ID(), '_testimonial_rating', true);
-$company = get_post_meta(get_the_ID(), '_testimonial_company', true);
-?>
-
-<div class="testimonial-item">
-    <div class="testimonial-rating">
-        <?php for ($i = 1; $i <= 5; $i++) : ?>
-            <span class="star <?php echo $i <= intval($rating) ? 'filled' : ''; ?>">★</span>
-        <?php endfor; ?>
-    </div>
-    <div class="testimonial-text">
-        "<?php the_content(); ?>"
-    </div>
-    <div class="testimonial-author">
-        <strong><?php echo $client_name ? esc_html($client_name) : get_the_title(); ?></strong>
-        <?php if ($company) : ?>
-            <span class="testimonial-company"><?php echo esc_html($company); ?></span>
-        <?php endif; ?>
     </div>
 </div>

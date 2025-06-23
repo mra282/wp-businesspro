@@ -203,12 +203,14 @@ function businesspro_custom_post_types() {
             'not_found' => __('No testimonials found', 'businesspro'),
             'not_found_in_trash' => __('No testimonials found in Trash', 'businesspro'),
         ),
-        'public' => false,
+        'public' => true,
         'show_ui' => true,
+        'has_archive' => true,
         'menu_position' => 6,
         'menu_icon' => 'dashicons-format-quote',
         'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
         'show_in_rest' => true,
+        'rewrite' => array('slug' => 'testimonials'),
     ));
 }
 add_action('init', 'businesspro_custom_post_types');
@@ -2106,12 +2108,11 @@ function businesspro_render_built_in_contact_form() {
             <label for="project-type"><?php esc_html_e('Project Type', 'businesspro'); ?></label>
             <select id="project-type" name="contact_service">
                 <option value=""><?php esc_html_e('Select a service', 'businesspro'); ?></option>
-                <?php
-                $services = businesspro_get_services_for_display();
-                foreach ($services as $service) {
-                    echo '<option value="' . esc_attr($service['title']) . '">' . esc_html($service['title']) . '</option>';
-                }
-                ?>
+                <option value="aerial-photography"><?php esc_html_e('Aerial Photography', 'businesspro'); ?></option>
+                <option value="video-production"><?php esc_html_e('Video Production', 'businesspro'); ?></option>
+                <option value="real-estate"><?php esc_html_e('Real Estate', 'businesspro'); ?></option>
+                <option value="commercial"><?php esc_html_e('Commercial Projects', 'businesspro'); ?></option>
+                <option value="events"><?php esc_html_e('Events & Weddings', 'businesspro'); ?></option>
                 <option value="other"><?php esc_html_e('Other', 'businesspro'); ?></option>
             </select>
         </div>
