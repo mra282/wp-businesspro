@@ -308,16 +308,16 @@
         
         $(window).on('scroll', function() {
             if ($(this).scrollTop() > 300) {
-                $scrollToTop.addClass('visible');
+                $scrollToTop.addClass('flex');
             } else {
-                $scrollToTop.removeClass('visible');
+                $scrollToTop.removeClass('flex');
             }
         });
         
         $scrollToTop.on('click', function() {
             $('html, body').animate({
                 scrollTop: 0
-            }, 600);
+            }, 500, 'easeInOutCubic');
         });
     }
 
@@ -394,9 +394,8 @@
                 const headerHeight = $('#masthead').outerHeight() || 80;
                 const targetOffset = $targetElement.offset().top - headerHeight;
                 
-                $('html, body').animate({
-                    scrollTop: targetOffset
-                }, 800, 'easeInOutQuart');
+                // Instant scroll - no animation
+                $('html, body').scrollTop(targetOffset);
                 
                 // Update active state
                 $sectionLinks.removeClass('active');
@@ -409,9 +408,12 @@
             }
         });
         
-        // Update active navigation on scroll
+        // Update active navigation on scroll and URL hash
+        let scrollTimeout;
         $(window).on('scroll', function() {
             const scrollPos = $(window).scrollTop() + (($('#masthead').outerHeight() || 80) + 50);
+            
+            let currentSection = null;
             
             $sections.each(function() {
                 const $section = $(this);
@@ -420,10 +422,21 @@
                 const sectionId = $section.attr('id');
                 
                 if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+                    currentSection = sectionId;
                     $sectionLinks.removeClass('active');
                     $sectionLinks.filter('[data-section="' + sectionId + '"]').addClass('active');
                 }
             });
+            
+            // Update URL hash after scroll stops (debounced)
+            if (currentSection) {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(function() {
+                    if (history.replaceState) {
+                        history.replaceState(null, null, '#' + currentSection);
+                    }
+                }, 100);
+            }
         });
     }
 
@@ -446,12 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(link);
     };
     
-    // Service Worker registration (if available)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(function(error) {
-            console.log('ServiceWorker registration failed: ', error);
-        });
-    }
+    // Service Worker registration (disabled - no sw.js file)
+    // if ('serviceWorker' in navigator) {
+    //     navigator.serviceWorker.register('/sw.js').catch(function(error) {
+    //         console.log('ServiceWorker registration failed: ', error);
+    //     });
+    // }
     
     // Critical performance metrics
     if ('PerformanceObserver' in window) {
@@ -666,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     $('html, body').animate({
                         scrollTop: target.offset().top - headerHeight - 20
-                    }, 800, 'easeInOutQuart');
+                    }, 600, 'easeInOutCubic');
                     
                     return false;
                 }
@@ -707,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $('.scroll-to-top').on('click', function() {
             $('html, body').animate({
                 scrollTop: 0
-            }, 800, 'easeInOutQuart');
+            }, 500, 'easeInOutCubic');
         });
     }
 
@@ -849,7 +862,12 @@ document.addEventListener('DOMContentLoaded', function() {
         initContactForm();
     }
 
-    // Add easing for smooth animations
+    // Add easing for smooth animations (faster, more responsive)
+    $.easing.easeInOutCubic = function(x, t, b, c, d) {
+        if ((t /= d / 2) < 1) return c / 2 * t * t * t + b;
+        return c / 2 * ((t -= 2) * t * t + 2) + b;
+    };
+    
     $.easing.easeInOutQuart = function(x, t, b, c, d) {
         if ((t /= d / 2) < 1) return c / 2 * t * t * t * t + b;
         return -c / 2 * ((t -= 2) * t * t * t - 2) + b;

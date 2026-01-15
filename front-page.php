@@ -124,6 +124,117 @@ $active_sections = businesspro_get_active_sections();
     </section>
     <?php endif; ?>
     
+    <?php if (in_array('certifications', $active_sections)) : ?>
+    <!-- Certifications & Compliance Section -->
+    <section class="section certifications-section bg-light" id="certifications">
+        <div class="container">
+            <div class="text-center mb-3">
+                <h2><?php echo esc_html(get_theme_mod('certifications_section_title', __('Licensed & Insured', 'businesspro'))); ?></h2>
+                <p><?php echo esc_html(get_theme_mod('certifications_section_subtitle', __('Fully compliant with all aviation regulations and safety standards', 'businesspro'))); ?></p>
+            </div>
+            
+            <div class="certifications-grid">
+                <?php
+                $certifications_args = array(
+                    'post_type' => 'certification',
+                    'posts_per_page' => get_theme_mod('certifications_display_count', 6),
+                    'orderby' => 'menu_order',
+                    'order' => 'ASC',
+                );
+                
+                $certifications_query = new WP_Query($certifications_args);
+                
+                if ($certifications_query->have_posts()) :
+                    while ($certifications_query->have_posts()) : $certifications_query->the_post();
+                        $cert_number = get_post_meta(get_the_ID(), 'cert_number', true);
+                        $cert_issued = get_post_meta(get_the_ID(), 'cert_issued_date', true);
+                        $cert_expires = get_post_meta(get_the_ID(), 'cert_expiry_date', true);
+                        $cert_issuer = get_post_meta(get_the_ID(), 'cert_issuer', true);
+                        $cert_icon = get_post_meta(get_the_ID(), 'cert_icon', true) ?: 'fas fa-certificate';
+                        ?>
+                        <div class="certification-card">
+                            <div class="certification-icon">
+                                <i class="<?php echo esc_attr($cert_icon); ?>" aria-hidden="true"></i>
+                            </div>
+                            <?php if (has_post_thumbnail()) : ?>
+                                <div class="certification-badge">
+                                    <?php the_post_thumbnail('medium', array('alt' => get_the_title())); ?>
+                                </div>
+                            <?php endif; ?>
+                            <h3><?php the_title(); ?></h3>
+                            <?php if ($cert_issuer) : ?>
+                                <p class="cert-issuer"><strong><?php echo esc_html($cert_issuer); ?></strong></p>
+                            <?php endif; ?>
+                            <?php if ($cert_number) : ?>
+                                <p class="cert-number">Cert #: <?php echo esc_html($cert_number); ?></p>
+                            <?php endif; ?>
+                            <?php if ($cert_expires) : ?>
+                                <p class="cert-expiry">Valid through: <?php echo esc_html(date('M Y', strtotime($cert_expires))); ?></p>
+                            <?php endif; ?>
+                            <?php if (get_the_content()) : ?>
+                                <div class="cert-description">
+                                    <?php the_content(); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php
+                    endwhile;
+                    wp_reset_postdata();
+                else :
+                    // Default certifications if none exist
+                    $default_certs = array(
+                        array(
+                            'title' => 'FAA Part 107 Certified',
+                            'icon' => 'fas fa-plane',
+                            'issuer' => 'Federal Aviation Administration',
+                            'number' => get_theme_mod('faa_cert_number', ''),
+                            'description' => 'Licensed remote pilot certified to operate commercial drones'
+                        ),
+                        array(
+                            'title' => '$1M Liability Insurance',
+                            'icon' => 'fas fa-shield-alt',
+                            'issuer' => get_theme_mod('insurance_provider', 'Commercial Drone Insurance'),
+                            'number' => get_theme_mod('insurance_policy_number', ''),
+                            'description' => 'Full commercial liability coverage for all operations'
+                        ),
+                        array(
+                            'title' => 'Registered Drone Operator',
+                            'icon' => 'fas fa-id-card',
+                            'issuer' => 'FAA',
+                            'number' => get_theme_mod('drone_registration_number', ''),
+                            'description' => 'All aircraft properly registered with aviation authority'
+                        ),
+                    );
+                    
+                    foreach ($default_certs as $cert) :
+                        ?>
+                        <div class="certification-card">
+                            <div class="certification-icon">
+                                <i class="<?php echo esc_attr($cert['icon']); ?>" aria-hidden="true"></i>
+                            </div>
+                            <h3><?php echo esc_html($cert['title']); ?></h3>
+                            <p class="cert-issuer"><strong><?php echo esc_html($cert['issuer']); ?></strong></p>
+                            <?php if ($cert['number']) : ?>
+                                <p class="cert-number">Cert #: <?php echo esc_html($cert['number']); ?></p>
+                            <?php endif; ?>
+                            <p class="cert-description"><?php echo esc_html($cert['description']); ?></p>
+                        </div>
+                        <?php
+                    endforeach;
+                endif;
+                ?>
+            </div>
+            
+            <div class="compliance-footer text-center mt-2">
+                <p class="compliance-statement">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
+                    <?php echo esc_html(get_theme_mod('compliance_statement', __('All operations conducted in compliance with FAA regulations and local airspace restrictions', 'businesspro'))); ?>
+                </p>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+    
     <?php if (in_array('services', $active_sections)) : ?>
     <!-- Services Section -->
     <section class="section" id="services">

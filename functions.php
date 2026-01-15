@@ -266,6 +266,53 @@ function businesspro_register_service_post_type() {
 add_action('init', 'businesspro_register_service_post_type', 0);
 
 /**
+ * Register Certifications Post Type (FAA, CAA, Insurance, etc.)
+ */
+function businesspro_register_certifications_post_type() {
+    $labels = array(
+        'name'                  => _x('Certifications', 'Post Type General Name', 'businesspro'),
+        'singular_name'         => _x('Certification', 'Post Type Singular Name', 'businesspro'),
+        'menu_name'             => __('Certifications', 'businesspro'),
+        'name_admin_bar'        => __('Certification', 'businesspro'),
+        'all_items'             => __('All Certifications', 'businesspro'),
+        'add_new_item'          => __('Add New Certification', 'businesspro'),
+        'add_new'               => __('Add New', 'businesspro'),
+        'new_item'              => __('New Certification', 'businesspro'),
+        'edit_item'             => __('Edit Certification', 'businesspro'),
+        'update_item'           => __('Update Certification', 'businesspro'),
+        'view_item'             => __('View Certification', 'businesspro'),
+        'view_items'            => __('View Certifications', 'businesspro'),
+        'search_items'          => __('Search Certification', 'businesspro'),
+        'not_found'             => __('No certifications found', 'businesspro'),
+        'not_found_in_trash'    => __('No certifications found in Trash', 'businesspro'),
+    );
+    
+    $args = array(
+        'label'                 => __('Certification', 'businesspro'),
+        'description'           => __('FAA/CAA licenses, insurance, and compliance certifications', 'businesspro'),
+        'labels'                => $labels,
+        'supports'              => array('title', 'editor', 'thumbnail', 'custom-fields'),
+        'hierarchical'          => false,
+        'public'                => true,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 26,
+        'menu_icon'             => 'dashicons-awards',
+        'show_in_admin_bar'     => true,
+        'show_in_nav_menus'     => true,
+        'can_export'            => true,
+        'has_archive'           => false,
+        'exclude_from_search'   => true,
+        'publicly_queryable'    => true,
+        'capability_type'       => 'post',
+        'show_in_rest'          => true,
+    );
+    
+    register_post_type('certification', $args);
+}
+add_action('init', 'businesspro_register_certifications_post_type', 0);
+
+/**
  * Custom Taxonomies
  */
 function businesspro_custom_taxonomies() {
@@ -1046,6 +1093,138 @@ function businesspro_save_meta_boxes($post_id) {
 add_action('save_post', 'businesspro_save_meta_boxes');
 
 /**
+ * Add Certification Meta Boxes
+ */
+function businesspro_add_certification_meta_boxes() {
+    add_meta_box(
+        'businesspro_certification_details',
+        __('Certification Details', 'businesspro'),
+        'businesspro_render_certification_meta_box',
+        'certification',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'businesspro_add_certification_meta_boxes');
+
+/**
+ * Render Certification Meta Box
+ */
+function businesspro_render_certification_meta_box($post) {
+    wp_nonce_field('businesspro_certification_meta_box', 'businesspro_certification_meta_box_nonce');
+    
+    $cert_number = get_post_meta($post->ID, 'cert_number', true);
+    $cert_issuer = get_post_meta($post->ID, 'cert_issuer', true);
+    $cert_issued_date = get_post_meta($post->ID, 'cert_issued_date', true);
+    $cert_expiry_date = get_post_meta($post->ID, 'cert_expiry_date', true);
+    $cert_icon = get_post_meta($post->ID, 'cert_icon', true);
+    ?>
+    <div style="padding: 10px;">
+        <p>
+            <label for="cert_issuer" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                <?php _e('Issuing Authority:', 'businesspro'); ?>
+            </label>
+            <input type="text" id="cert_issuer" name="cert_issuer" value="<?php echo esc_attr($cert_issuer); ?>" 
+                   placeholder="e.g., Federal Aviation Administration" style="width: 100%; padding: 8px;">
+            <small style="display: block; margin-top: 5px; color: #666;">
+                <?php _e('e.g., FAA, CAA, Insurance Company', 'businesspro'); ?>
+            </small>
+        </p>
+        
+        <p>
+            <label for="cert_number" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                <?php _e('Certificate/License Number:', 'businesspro'); ?>
+            </label>
+            <input type="text" id="cert_number" name="cert_number" value="<?php echo esc_attr($cert_number); ?>" 
+                   placeholder="e.g., 4012345" style="width: 100%; padding: 8px;">
+        </p>
+        
+        <p>
+            <label for="cert_issued_date" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                <?php _e('Date Issued:', 'businesspro'); ?>
+            </label>
+            <input type="date" id="cert_issued_date" name="cert_issued_date" value="<?php echo esc_attr($cert_issued_date); ?>" 
+                   style="width: 100%; padding: 8px;">
+        </p>
+        
+        <p>
+            <label for="cert_expiry_date" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                <?php _e('Expiry Date:', 'businesspro'); ?>
+            </label>
+            <input type="date" id="cert_expiry_date" name="cert_expiry_date" value="<?php echo esc_attr($cert_expiry_date); ?>" 
+                   style="width: 100%; padding: 8px;">
+            <small style="display: block; margin-top: 5px; color: #666;">
+                <?php _e('Leave blank if certification does not expire', 'businesspro'); ?>
+            </small>
+        </p>
+        
+        <p>
+            <label for="cert_icon" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                <?php _e('Icon Class (FontAwesome):', 'businesspro'); ?>
+            </label>
+            <input type="text" id="cert_icon" name="cert_icon" value="<?php echo esc_attr($cert_icon); ?>" 
+                   placeholder="fas fa-certificate" style="width: 100%; padding: 8px;">
+            <small style="display: block; margin-top: 5px; color: #666;">
+                <?php _e('e.g., fas fa-plane, fas fa-shield-alt, fas fa-id-card, fas fa-certificate', 'businesspro'); ?>
+            </small>
+        </p>
+        
+        <p style="padding: 15px; background: #f0f0f1; border-left: 4px solid #2271b1; margin-top: 20px;">
+            <strong><?php _e('Tip:', 'businesspro'); ?></strong> 
+            <?php _e('Use the Featured Image to upload a badge/certificate image. The title and content will be displayed on the front page.', 'businesspro'); ?>
+        </p>
+    </div>
+    <?php
+}
+
+/**
+ * Save Certification Meta Box Data
+ */
+function businesspro_save_certification_meta_box($post_id) {
+    // Check if nonce is set
+    if (!isset($_POST['businesspro_certification_meta_box_nonce'])) {
+        return;
+    }
+    
+    // Verify nonce
+    if (!wp_verify_nonce($_POST['businesspro_certification_meta_box_nonce'], 'businesspro_certification_meta_box')) {
+        return;
+    }
+    
+    // Check autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    
+    // Check permissions
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    
+    // Save fields
+    if (isset($_POST['cert_number'])) {
+        update_post_meta($post_id, 'cert_number', sanitize_text_field($_POST['cert_number']));
+    }
+    
+    if (isset($_POST['cert_issuer'])) {
+        update_post_meta($post_id, 'cert_issuer', sanitize_text_field($_POST['cert_issuer']));
+    }
+    
+    if (isset($_POST['cert_issued_date'])) {
+        update_post_meta($post_id, 'cert_issued_date', sanitize_text_field($_POST['cert_issued_date']));
+    }
+    
+    if (isset($_POST['cert_expiry_date'])) {
+        update_post_meta($post_id, 'cert_expiry_date', sanitize_text_field($_POST['cert_expiry_date']));
+    }
+    
+    if (isset($_POST['cert_icon'])) {
+        update_post_meta($post_id, 'cert_icon', sanitize_text_field($_POST['cert_icon']));
+    }
+}
+add_action('save_post_certification', 'businesspro_save_certification_meta_box');
+
+/**
  * Handle Contact Form Submission
  */
 function businesspro_handle_contact_form() {
@@ -1138,10 +1317,10 @@ function businesspro_contact_form_messages() {
  * AJAX Portfolio Filter
  */
 function businesspro_ajax_portfolio_filter() {
-    check_ajax_referer('portfolio_filter_nonce', 'nonce');
+    check_ajax_referer('businesspro_nonce', 'nonce');
     
-    $category = sanitize_text_field($_POST['category']);
-    $page = intval($_POST['page']);
+    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : 'all';
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
     $posts_per_page = get_option('posts_per_page', 6);
     
     $args = array(
@@ -1183,6 +1362,8 @@ function businesspro_ajax_portfolio_filter() {
 }
 add_action('wp_ajax_portfolio_filter', 'businesspro_ajax_portfolio_filter');
 add_action('wp_ajax_nopriv_portfolio_filter', 'businesspro_ajax_portfolio_filter');
+add_action('wp_ajax_filter_portfolio', 'businesspro_ajax_portfolio_filter');
+add_action('wp_ajax_nopriv_filter_portfolio', 'businesspro_ajax_portfolio_filter');
 
 /**
  * Add Contact Form Customizer Settings
@@ -1660,7 +1841,7 @@ add_action('customize_register', 'businesspro_add_single_page_nav_support');
  * Get Active Homepage Sections
  */
 function businesspro_get_active_sections() {
-    $section_order = get_theme_mod('section_order', 'hero,about,services,portfolio,testimonials,contact');
+    $section_order = get_theme_mod('section_order', 'hero,about,certifications,services,portfolio,testimonials,contact');
     $sections = explode(',', $section_order);
     $active_sections = array();
     
@@ -1687,6 +1868,7 @@ function businesspro_render_section_navigation() {
     $section_labels = array(
         'hero' => __('Home', 'businesspro'),
         'about' => __('About', 'businesspro'),
+        'certifications' => __('Certifications', 'businesspro'),
         'services' => __('Services', 'businesspro'),
         'portfolio' => __('Portfolio', 'businesspro'),
         'testimonials' => __('Testimonials', 'businesspro'),

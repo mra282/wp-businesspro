@@ -4,7 +4,7 @@ Theme URI: https://github.com/mra282/wp-businesspro
 Author: Michael Anuszewski
 Author URI: https://github.com/mra282
 Description: A modern, responsive WordPress theme for small businesses and professionals. Features portfolio galleries, service showcases, testimonials, contact forms, and customizable sections perfect for agencies, consultants, freelancers, and service-based businesses.
-Version: 2.0.2
+Version: 2.0.4
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: businesspro
@@ -558,6 +558,129 @@ body:not(.home) .custom-logo {
 }
 
 /* ==================================================
+   CERTIFICATIONS & COMPLIANCE
+   ================================================== */
+
+.certifications-section {
+    background-color: var(--light-gray);
+    padding: 4rem 0;
+}
+
+.certifications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.certification-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.certification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-blue);
+}
+
+.certification-icon {
+    font-size: 3rem;
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+}
+
+.certification-badge {
+    margin: 1rem 0;
+}
+
+.certification-badge img {
+    max-width: 150px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.certification-card h3 {
+    font-size: 1.25rem;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.cert-issuer {
+    color: var(--primary-blue);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.cert-number {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    background: var(--light-gray);
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.5rem 0;
+}
+
+.cert-expiry {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    font-style: italic;
+}
+
+.cert-description {
+    font-size: 0.9rem;
+    color: var(--medium-gray);
+    margin-top: 1rem;
+    line-height: 1.5;
+}
+
+.compliance-footer {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(0, 123, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-blue);
+}
+
+.compliance-statement {
+    font-size: 1rem;
+    color: var(--dark-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.compliance-statement i {
+    color: var(--success-green);
+    font-size: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .certifications-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .certification-icon {
+        font-size: 2.5rem;
+    }
+    
+    .compliance-statement {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ==================================================
    TESTIMONIALS
    ================================================== */
 
@@ -978,6 +1101,11 @@ body:not(.home) .custom-logo {
     z-index: 100;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-size: 1.2rem; /* Ensure icon size */
+}
+
+.scroll-to-top svg {
+    display: block;
+    flex-shrink: 0;
 }
 
 .scroll-to-top i {
@@ -1475,6 +1603,7 @@ body:not(.home) .custom-logo {
 
 .hidden { display: none; }
 .visible { display: block; }
+.flex { display: flex; }
 
 /* ==================================================
    ACCESSIBILITY
